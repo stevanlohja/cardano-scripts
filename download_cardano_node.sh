@@ -50,3 +50,6 @@ if ! grep -q "/usr/local/bin/cardano-node" ~/.bashrc; then
 fi
 
 echo "Cardano Node ${version} has been successfully installed and added to PATH."
+
+# Clean up temporary directory
+rm -r "${temp_dir}"
