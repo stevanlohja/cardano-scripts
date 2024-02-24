@@ -32,15 +32,33 @@ temp_dir=$(mktemp -d)
 echo "Downloading Cardano Node ${version}..."
 wget -qO "${temp_dir}/cardano-node-${version}.tar.gz" "${download_url}"
 
+# Check if download was successful
+if [ $? -ne 0 ]; then
+    echo "Error downloading Cardano Node. Please check the version and try again."
+    exit 1
+fi
+
 # Extract and install
 echo "Extracting and installing..."
 tar -xzf "${temp_dir}/cardano-node-${version}.tar.gz" -C "${temp_dir}"
 
+# Check if tar extraction was successful
+if [ $? -ne 0 ]; then
+    echo "Error extracting Cardano Node archive. Please check the downloaded file."
+    exit 1
+fi
+
 # Get the extracted directory name
 extracted_dir=$(tar -tzf "${temp_dir}/cardano-node-${version}.tar.gz" | head -1 | cut -f1 -d'/')
 
-# Move to /usr/local/bin/cardano-node
-sudo mv "${temp_dir}/${extracted_dir}" /usr/local/bin/cardano-node
+# Move contents to /usr/local/bin/cardano-node
+sudo mv "${temp_dir}/${extracted_dir}/"* /usr/local/bin/cardano-node
+
+# Check if move was successful
+if [ $? -ne 0 ]; then
+    echo "Error moving files to /usr/local/bin/cardano-node."
+    exit 1
+fi
 
 # Add to PATH
 if ! grep -q "/usr/local/bin/cardano-node" ~/.bashrc; then
