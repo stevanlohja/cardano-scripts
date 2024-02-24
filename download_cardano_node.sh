@@ -35,12 +35,12 @@ wget -qO "${temp_dir}/cardano-node-${version}.tar.gz" "${download_url}"
 # Extract and install
 echo "Extracting and installing..."
 tar -xzf "${temp_dir}/cardano-node-${version}.tar.gz" -C "${temp_dir}"
-sudo mv "${temp_dir}/cardano-node-${version}" /usr/local/bin/
+sudo mv "${temp_dir}/cardano-node-${version}" /usr/local/bin/cardano-node
 
 # Add to PATH
-if ! grep -q "/usr/local/bin/cardano-node-${version}" ~/.bashrc; then
+if ! grep -q "/usr/local/bin/cardano-node" ~/.bashrc; then
     echo "Adding Cardano Node to PATH..."
-    echo "export PATH=\$PATH:/usr/local/bin/cardano-node-${version}" >> ~/.bashrc
+    echo "export PATH=\$PATH:/usr/local/bin/cardano-node" >> ~/.bashrc
     source ~/.bashrc
 fi
 
