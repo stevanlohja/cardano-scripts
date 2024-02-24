@@ -1,53 +1,47 @@
 #!/bin/bash
 
-# Set the default repository URL
-REPO_URL="https://github.com/IntersectMBO/cardano-node"
-
-# Set the default target directory for the binary
-TARGET_DIR="$HOME/.local/bin"  # You can change this to your preferred directory
-
-# Function to display usage
-usage() {
-    echo "Usage: $0 [-v <version>] [-d <target_directory>]"
-    echo "Options:"
-    echo "  -v <version>: Specify the version to download (default: latest)"
-    echo "  -d <target_directory>: Specify the target directory (default: $TARGET_DIR)"
-    exit 1
+# Function to display usage information
+display_usage() {
+    echo "Usage: $0 [-v version]"
+    echo "If version is not provided, the latest release will be downloaded."
 }
 
 # Parse command line options
-while getopts "v:d:" opt; do
+while getopts ":v:" opt; do
     case $opt in
         v)
-            VERSION=$OPTARG
+            version="$OPTARG"
             ;;
-        d)
-            TARGET_DIR=$OPTARG
+        \?)
+            echo "Invalid option: -$OPTARG"
+            display_usage
+            exit 1
             ;;
-        *)
-            usage
+        :)
+            echo "Option -$OPTARG requires an argument."
+            display_usage
+            exit 1
             ;;
     esac
 done
 
-# Create the target directory if it doesn't exist
-mkdir -p $TARGET_DIR
+# Download the Cardano Node release
+download_url="https://github.com/IntersectMBO/cardano-node/releases/download/${version}/cardano-node-${version}-linux.tar.gz"
+temp_dir=$(mktemp -d)
 
-# If version is not specified, get the latest release version from GitHub
-if [ -z "$VERSION" ]; then
-    VERSION=$(curl -sSL $REPO_URL/releases/latest | grep -oP '(?<=cardano-node-)[^"]*')
+echo "Downloading Cardano Node ${version}..."
+wget -qO "${temp_dir}/cardano-node-${version}.tar.gz" "${download_url}"
+
+# Extract and install
+echo "Extracting and installing..."
+tar -xzf "${temp_dir}/cardano-node-${version}.tar.gz" -C "${temp_dir}"
+sudo mv "${temp_dir}/cardano-node-${version}" /usr/local/bin/
+
+# Add to PATH
+if ! grep -q "/usr/local/bin/cardano-node-${version}" ~/.bashrc; then
+    echo "Adding Cardano Node to PATH..."
+    echo "export PATH=\$PATH:/usr/local/bin/cardano-node-${version}" >> ~/.bashrc
+    source ~/.bashrc
 fi
 
-# Download the cardano-node binary and extract
-curl -sSL $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.gz -o /tmp/cardano-node.tar.gz
-tar -xz -C $TARGET_DIR -f /tmp/cardano-node.tar.gz --strip-components=1
-
-# Set executable permissions
-chmod +x $TARGET_DIR/cardano-node
-
-# Add the target directory to the PATH
-echo "export PATH=\$PATH:$TARGET_DIR" >> $HOME/.bashrc
-source $HOME/.bashrc  # Update the current session
-
-# Verify the installation
-cardano-node --version
+echo "Cardano Node ${version} has been successfully installed and added to PATH."
