@@ -8,20 +8,16 @@ TARGET_DIR="$HOME/.local/bin"  # You can change this to your preferred directory
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 [-r <repository_url>] [-v <version>] [-d <target_directory>]"
+    echo "Usage: $0 [-v <version>] [-d <target_directory>]"
     echo "Options:"
-    echo "  -r <repository_url>: Specify the repository URL (default: $REPO_URL)"
     echo "  -v <version>: Specify the version to download (default: latest)"
     echo "  -d <target_directory>: Specify the target directory (default: $TARGET_DIR)"
     exit 1
 }
 
 # Parse command line options
-while getopts "r:v:d:" opt; do
+while getopts "v:d:" opt; do
     case $opt in
-        r)
-            REPO_URL=$OPTARG
-            ;;
         v)
             VERSION=$OPTARG
             ;;
@@ -39,20 +35,14 @@ mkdir -p $TARGET_DIR
 
 # If version is not specified, get the latest release version from GitHub
 if [ -z "$VERSION" ]; then
-    VERSION=$(curl -sSL $REPO_URL/releases/latest | grep -oP '(?<=tag\/v)[^"]*')
+    VERSION=$(curl -sSL $REPO_URL/releases/latest | grep -oP '(?<=cardano-node-)[^"]*')
 fi
 
-# Download the cardano-node binary
-curl -sSLJ -o $TARGET_DIR/cardano-node $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.gz
-
-# Extract the binary from the tarball
-tar -xzf $TARGET_DIR/cardano-node-$VERSION-linux.tar.gz -C $TARGET_DIR --strip-components=2 cardano-node-$VERSION-linux/cardano-node
+# Download the cardano-node binary and extract
+curl -sSL $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.gz | tar -xz -C $TARGET_DIR --strip-components=1
 
 # Set executable permissions
 chmod +x $TARGET_DIR/cardano-node
 
-# Clean up the downloaded tarball
-rm $TARGET_DIR/cardano-node-$VERSION-linux.tar.gz
-
 # Verify the installation
-cardano-node --version
+$TARGET_DIR/cardano-node --version
