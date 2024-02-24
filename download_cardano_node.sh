@@ -39,7 +39,8 @@ if [ -z "$VERSION" ]; then
 fi
 
 # Download the cardano-node binary and extract
-curl -sSL $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.gz | tar -xz -C $TARGET_DIR --strip-components=1
+curl -sSL $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.gz -o /tmp/cardano-node.tar.gz
+tar -xz -C $TARGET_DIR -f /tmp/cardano-node.tar.gz --strip-components=1
 
 # Set executable permissions
 chmod +x $TARGET_DIR/cardano-node
