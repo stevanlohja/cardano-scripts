@@ -44,5 +44,9 @@ curl -sSL $REPO_URL/releases/download/$VERSION/cardano-node-$VERSION-linux.tar.g
 # Set executable permissions
 chmod +x $TARGET_DIR/cardano-node
 
+# Add the target directory to the PATH
+echo "export PATH=\$PATH:$TARGET_DIR" >> $HOME/.bashrc
+source $HOME/.bashrc  # Update the current session
+
 # Verify the installation
-$TARGET_DIR/cardano-node --version
+cardano-node --version
