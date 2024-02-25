@@ -15,4 +15,4 @@ DB_PATH="$NODE_DIR/db"
 SOCKET_PATH="$NODE_DIR/db/socket"
 CONFIG="$NODE_DIR/config.json"
 
-/usr/local/bin/cardano-node run --topology $TOPOLOGY --database-path $DB_PATH --socket-path $SOCKET_PATH --host-addr $HOSTADDR --port $PORT --config $CONFIG
+/usr/bin/cardano-node run --topology $TOPOLOGY --database-path $DB_PATH --socket-path $SOCKET_PATH --host-addr $HOSTADDR --port $PORT --config $CONFIG

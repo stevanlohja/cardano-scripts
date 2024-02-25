@@ -26,7 +26,7 @@ if [ -z "$release_url" ]; then
   exit 1
 fi
 
-install_dir="/usr/local/bin"
+install_dir="/usr/bin"
 
 # Change to the installation directory
 cd "$install_dir" || exit
