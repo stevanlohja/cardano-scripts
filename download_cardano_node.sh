@@ -34,12 +34,12 @@ wget "${DOWNLOAD_URL}"
 
 # Extract the contents
 echo "Extracting archive..."
-tar -xzf "cardano-node-${CARDANO_NODE_VERSION}-linux.tar.gz"
+tar -xzf "cardano-node-${CARDANO_NODE_VERSION}-linux.tar.gz" --strip-components=1
 
 # Move binaries to /usr/bin
 echo "Moving binaries to /usr/bin..."
-sudo mv "cardano-node-${CARDANO_NODE_VERSION}-linux/cardano-node" "/usr/bin/"
-sudo mv "cardano-node-${CARDANO_NODE_VERSION}-linux/cardano-cli" "/usr/bin/"
+sudo mv "cardano-node" "/usr/bin/"
+sudo mv "cardano-cli" "/usr/bin/"
 
 # Clean up temporary files
 echo "Cleaning up..."
