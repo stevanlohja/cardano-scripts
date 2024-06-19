@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Create directory structure if it doesn't exist: $HOME/.local/bin/cardano-node
 mkdir -p $HOME/.local/bin/cardano-node 
 
